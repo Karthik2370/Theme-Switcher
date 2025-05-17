@@ -3,23 +3,16 @@ import { FiSun, FiMoon } from 'react-icons/fi';
 import './App.css';
 
 export default function App() {
-  const [theme, setTheme] = useState(() => {
-    const savedTheme = localStorage.getItem('theme');
-    return savedTheme || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-  });
-  const [transitionType, setTransitionType] = useState(() => {
-    return localStorage.getItem('transitionType') || 'default';
-  });
+  const [theme, setTheme] = useState('light');
+  const [transitionType, setTransitionType] = useState('default');
 
   const overlayRef = useRef(null);
   const appRef = useRef(null);
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
-    localStorage.setItem('theme', theme);
     appRef.current.classList.remove('transition-type-scan', 'transition-type-default');
     appRef.current.classList.add(`transition-type-${transitionType}`);
-    localStorage.setItem('transitionType', transitionType);
   }, [theme, transitionType]);
 
   const toggleTheme = () => {
@@ -30,7 +23,6 @@ export default function App() {
       // Default
       document.documentElement.setAttribute('data-theme', newTheme);
       setTheme(newTheme);
-      localStorage.setItem('theme', newTheme);
     } else {
       // Scan
       const overlay = overlayRef.current;
@@ -47,7 +39,6 @@ export default function App() {
       setTimeout(() => {
         document.documentElement.setAttribute('data-theme', newTheme);
         setTheme(newTheme);
-        localStorage.setItem('theme', newTheme);
         overlay.classList.remove('active');
         overlay.classList.add('reverse');
 
