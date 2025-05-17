@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { flushSync } from 'react-dom';
 import { FiSun, FiMoon } from 'react-icons/fi';
 import './App.css';
 
@@ -8,10 +9,11 @@ export default function App() {
 
   const overlayRef = useRef(null);
   const appRef = useRef(null);
+  const sliderTrackRef = useRef(null);
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
-    appRef.current.classList.remove('transition-type-scan', 'transition-type-default');
+    appRef.current.classList.remove('transition-type-scan', 'transition-type-default', 'transition-type-radial');
     appRef.current.classList.add(`transition-type-${transitionType}`);
   }, [theme, transitionType]);
 
@@ -23,7 +25,7 @@ export default function App() {
       // Default
       document.documentElement.setAttribute('data-theme', newTheme);
       setTheme(newTheme);
-    } else {
+    } else if (transitionType === 'scan') {
       // Scan
       const overlay = overlayRef.current;
       const app = appRef.current;
@@ -47,6 +49,47 @@ export default function App() {
           app.classList.remove('transitioning', 'to-dark', 'to-light');
         }, 600);
       }, 1000);
+    } else if (transitionType === 'radial') {
+      // Radial
+      if (
+        !sliderTrackRef.current ||
+        !document.startViewTransition ||
+        window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      ) {
+        document.documentElement.setAttribute('data-theme', newTheme);
+        setTheme(newTheme);
+        return;
+      }
+
+      document.startViewTransition(() => {
+        flushSync(() => {
+          setTheme(newTheme);
+        });
+      }).ready.then(() => {
+        const { top, left, width, height } = sliderTrackRef.current.getBoundingClientRect();
+        const x = left + width / 2;
+        const y = top + height / 2;
+        const right = window.innerWidth - left;
+        const bottom = window.innerHeight - top;
+        const maxRadius = Math.hypot(
+          Math.max(left, right),
+          Math.max(top, bottom)
+        );
+
+        document.documentElement.animate(
+          {
+            clipPath: [
+              `circle(0px at ${x}px ${y}px)`,
+              `circle(${maxRadius}px at ${x}px ${y}px)`,
+            ],
+          },
+          {
+            duration: 500,
+            easing: 'ease-in-out',
+            pseudoElement: '::view-transition-new(root)',
+          }
+        );
+      });
     }
   };
 
@@ -77,7 +120,7 @@ export default function App() {
             }
           }}
         >
-          <div className="slider-track">
+          <div className="slider-track" ref={sliderTrackRef}>
             <FiSun className="slider-icon sun" size={20} />
             <FiMoon className="slider-icon moon" size={20} />
           </div>
@@ -94,10 +137,26 @@ export default function App() {
         >
           <option value="default">Default</option>
           <option value="scan">Scan</option>
+          <option value="radial">Radial</option>
         </select>
       </header>
       <section className="features" style={{ '--transition-delay': '0.2s' }}>
-        {transitionType === 'scan' ? (
+        {transitionType === 'default' ? (
+          <>
+            <div className="feature-card" style={{ '--delay': '0s' }}>
+              <h3>Boring</h3>
+              <p>Lacks any exciting effects.</p>
+            </div>
+            <div className="feature-card" style={{ '--delay': '0.1s' }}>
+              <h3>Basic</h3>
+              <p>Just a plain theme switch.</p>
+            </div>
+            <div className="feature-card" style={{ '--delay': '0.2s' }}>
+              <h3>Plain</h3>
+              <p>No visual flair or style.</p>
+            </div>
+          </>
+        ) : transitionType === 'scan' ? (
           <>
             <div className="feature-card" style={{ '--delay': '0s' }}>
               <h3>Fluent</h3>
@@ -115,16 +174,16 @@ export default function App() {
         ) : (
           <>
             <div className="feature-card" style={{ '--delay': '0s' }}>
-              <h3>Boring</h3>
-              <p>Lacks any exciting effects.</p>
+              <h3>Circular</h3>
+              <p>Radiates from the toggle center.</p>
             </div>
             <div className="feature-card" style={{ '--delay': '0.1s' }}>
-              <h3>Basic</h3>
-              <p>Just a plain theme switch.</p>
+              <h3>Expansive</h3>
+              <p>Fills the entire page seamlessly.</p>
             </div>
             <div className="feature-card" style={{ '--delay': '0.2s' }}>
-              <h3>Plain</h3>
-              <p>No visual flair or style.</p>
+              <h3>Vivid</h3>
+              <p>Striking and engaging visuals.</p>
             </div>
           </>
         )}

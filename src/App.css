@@ -95,7 +95,6 @@ body::after {
   justify-content: space-between;
   padding: 0 4px;
   transition: background-color 0.2s ease;
-  box-shadow: 0 0 0 2px var(--primary-hover);
 }
 
 [data-theme='dark'] .slider-track {
@@ -113,7 +112,8 @@ body::after {
   color: var(--slider-icon-dark);
 }
 
-.transition-type-default .slider-icon {
+.transition-type-default .slider-icon,
+.transition-type-radial .slider-icon {
   transition: none;
 }
 
@@ -131,6 +131,34 @@ body::after {
 
 .theme-slider.dark .moon {
   color: #ffffff;
+}
+
+.slider-thumb {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background-color: #ffffff;
+  border-radius: 50%;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+  transition: transform 0.15s ease;
+  z-index: 1;
+}
+
+.transition-type-default .slider-thumb,
+.transition-type-radial .slider-thumb {
+  transition: none;
+}
+
+.theme-slider.light .slider-thumb {
+  transform: translateX(2px);
+}
+
+.theme-slider.dark .slider-thumb {
+  transform: translateX(26px);
+}
+
+.theme-slider:hover .slider-track {
+  filter: brightness(1.05);
 }
 
 .theme-slider:focus {
@@ -177,7 +205,8 @@ body::after {
   width: 100%;
 }
 
-.transition-type-default .transition-select {
+.transition-type-default .transition-select,
+.transition-type-radial .transition-select {
   transition: none;
 }
 
@@ -232,7 +261,7 @@ body::after {
   box-shadow: var(--shadow);
 }
 
-/* Theme transition overlay */
+/* Theme transition overlay (for Scan) */
 .theme-transition-overlay {
   position: fixed;
   top: 0;
@@ -253,7 +282,8 @@ body::after {
   box-shadow: 0 0 20px rgba(79, 70, 229, 0.3);
 }
 
-.transition-type-default .theme-transition-overlay {
+.transition-type-default .theme-transition-overlay,
+.transition-type-radial .theme-transition-overlay {
   display: none;
 }
 
@@ -336,8 +366,8 @@ body::after {
 .transition-type-scan.transitioning.to-light.active .hero p::before,
 .transition-type-scan.transitioning.to-light.active .feature-card h3::before,
 .transition-type-scan.transitioning.to-light.active .feature-card p::before,
-.transition-type-scan.transitioning.to-dark.active .footer p::before,
-.transition-type-scan.transitioning.to-dark.active .transition-select::before {
+.transition-type-scan.transitioning.to-light.active .footer p::before,
+.transition-type-scan.transitioning.to-light.active .transition-select::before {
   animation: reveal-reverse 1s cubic-bezier(0.33, 0, 0, 1) forwards var(--transition-delay, 0s);
 }
 
@@ -359,7 +389,7 @@ body::after {
   }
 }
 
-/* Scan color definitions */
+/* Scan color */
 .transition-type-scan.transitioning.to-dark .navbar::before,
 .transition-type-scan.transitioning.to-dark.active .navbar::before {
   background-color: var(--card-bg-dark);
@@ -464,7 +494,7 @@ body::after {
   border-color: var(--primary-color);
 }
 
-/* Default transition */
+/* Default and Radial transitions */
 .transition-type-default.transitioning .navbar,
 .transition-type-default.transitioning .hero,
 .transition-type-default.transitioning .feature-card,
@@ -475,7 +505,18 @@ body::after {
 .transition-type-default.transitioning .feature-card h3,
 .transition-type-default.transitioning .feature-card p,
 .transition-type-default.transitioning .footer p,
-.transition-type-default.transitioning .transition-select {
+.transition-type-default.transitioning .transition-select,
+.transition-type-radial.transitioning .navbar,
+.transition-type-radial.transitioning .hero,
+.transition-type-radial.transitioning .feature-card,
+.transition-type-radial.transitioning .footer,
+.transition-type-radial.transitioning .logo,
+.transition-type-radial.transitioning .hero h2,
+.transition-type-radial.transitioning .hero p,
+.transition-type-radial.transitioning .feature-card h3,
+.transition-type-radial.transitioning .feature-card p,
+.transition-type-radial.transitioning .footer p,
+.transition-type-radial.transitioning .transition-select {
   transition: none;
 }
 
@@ -499,6 +540,19 @@ body::after {
 
   .slider-icon {
     font-size: 14px;
+  }
+
+  .slider-thumb {
+    width: 16px;
+    height: 16px;
+  }
+
+  .theme-slider.light .slider-thumb {
+    transform: translateX(2px);
+  }
+
+  .theme-slider.dark .slider-thumb {
+    transform: translateX(22px);
   }
 
   .hero {
@@ -571,3 +625,4 @@ body::after {
     padding: 0.85rem;
   }
 }
+
