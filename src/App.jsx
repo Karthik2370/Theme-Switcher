@@ -89,7 +89,6 @@ export default function App() {
           <div className="slider-track">
             <FiSun className="slider-icon sun" size={20} />
             <FiMoon className="slider-icon moon" size={20} />
-            <div className="slider-thumb"></div>
           </div>
         </div>
       </nav>
@@ -102,8 +101,8 @@ export default function App() {
           className="transition-select"
           aria-label="Select theme transition type"
         >
-          <option value="scan">Scan</option>
           <option value="default">Default</option>
+          <option value="scan">Scan</option>
         </select>
       </header>
       <section className="features" style={{ '--transition-delay': '0.2s' }}>
